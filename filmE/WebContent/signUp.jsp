@@ -8,15 +8,33 @@
    function checkId(){
       $.ajax({ 
          type: "GET", // 단순 정보 조회 시에는 GET, 정보가 너무 많거나 insert/update를 할때는 POST
-         url: "CheckID.do",
+         url: "CheckID.do", /////////// ???????
          data: {
             id : $("#id").val() // $().val() : 값 가져오기
          },
          success: function(data) { 
             if (data.trim()=="false") {
-               $("#result").text("사용 가능한 ID입니다.");
+               for(var i=0; i<document.check.id.value.length; i++){ // 아이디 길이체크
+                  ch=document.check.id.value.charAt(i) // char타입으로 변환
+                  if (!(ch >= '0' && ch <= '9') && !(ch >= 'a' && ch <= 'z')&&!(ch >= 'A' && ch <= 'Z')) { // 대소문자 및 숫자 입력가능
+                     $("#resultId").css("color","red");
+                     $("#resultId").text("아이디에 영문 대소문자, 숫자만 입력가능합니다.");
+                     }
+                  else if (document.check.id.value.length<4 || document.check.id.value.length>12) {
+                     $("#resultId").css("color","red");
+                     $("#resultId").text("아이디를 4~12자까지 입력해주세요.");
+                    }
+                  else{
+                     $("#resultId").css("color","green");
+                     $("#resultId").text("사용 가능한 아이디입니다.");
+                  }
+               }
+               
+               /* alert("사용 가능한 ID입니다."); */
             } else {
-               $("#result").text("ID가 이미 존재합니다. 다시 입력하세요.");
+               $("#resultId").css("color","red");
+               $("#resultId").text("아이디가 이미 존재합니다. 다시 입력하세요.");
+               /* alert("ID가 이미 존재합니다. 다시 입력하세요."); */
             }
          },
          error: function(xhr) {
@@ -24,6 +42,37 @@
             alert("에러발생!");
          }
       });
+   }
+   function checkPw1(){
+         if(check.pw.value == check.id.value){
+            $("#resultPw1").css("color","red");
+            $("#resultPw1").text("아이디와 비밀번호가 같습니다.");
+         }
+         else{
+            $("#resultPw1").css("color","green");
+            $("#resultPw1").text("사용 가능한 비밀번호 입니다.");
+         }
+   }
+   function checkPw2(){
+      if(document.check.pw1.value != document.check.pw.value){
+         $("#resultPw2").css("color","red");
+         $("#resultPw2").text("비밀번호가 일치하지 않습니다.");
+      }
+      else{
+         $("#resultPw2").css("color","green");
+         $("#resultPw2").text("비밀번호가 일치합니다.");
+      }
+   }
+   function checkEmail(){
+      var regExp = /^([0-9a-zA-Z_\.-]+)@([0-9a-zA-Z_-]+)(\.[0-9a-zA-Z_-]+){1,2}$/;
+        if(document.check.email.value.match(regExp) == null) {
+         $("#resultEmail").css("color","red");
+         $("#resultEmail").text("올바른 이메일 형식이 아닙니다.");
+      }
+      else{
+         $("#resultEmail").css("color","green");
+         $("#resultEmail").text("사용 가능한 이메일입니다.");
+      }
    }
    function send(){
       // 아이디 유효성 검사 (영어대소문자,숫자만허용)
@@ -79,11 +128,11 @@
          // 이메일 유효성 검사
          var regExp = /^([0-9a-zA-Z_\.-]+)@([0-9a-zA-Z_-]+)(\.[0-9a-zA-Z_-]+){1,2}$/;
          if(document.check.email.value.match(regExp) == null) {
- 		    alert('올바른 이메일 형식이 아닙니다.')
- 		    document.check.email.value = ""
- 			document.check.email.focus();
- 			return false;
- 		}
+           alert('올바른 이메일 형식이 아닙니다.')
+           document.check.email.value = ""
+          document.check.email.focus();
+          return false;
+       }
    }
 </script>
 <head>
@@ -187,22 +236,27 @@
                                 <input type="text" name="id" id="id" placeholder="ID" onkeyup="checkId()"style="margin-bottom: -15px;" required>
                                 <span class="icon_profile"></span>
                             </div>
-                                <span id="result" style="font-size: small;color: #FFFFFF;">아이디체크</span>
+                                <span id="resultId"><br></span>
                             <div class="input__item">
-                                <input type="password" name="pw" id="pw" placeholder="Password" style="margin-bottom: 15px;" required>
+                                <input type="password" name="pw" id="pw" placeholder="Password" onkeyup="checkPw1()" style="margin-bottom: -15px;" required>
                                 <span class="icon_lock"></span>
                             </div>
+                               <span id="resultPw1"><br></span>
                            <div class="input__item">
-                                <input type="password" id="pw1" placeholder="Password Check" style="margin-bottom: 15px;" required>
+                                <input type="password" id="pw1" placeholder="Password Check" onkeyup="checkPw2()"style="margin-bottom: -15px;" required>
                                 <span class="icon_lock"></span>
                             </div>
+                               <span id="resultPw2"><br></span>
                             <div class="input__item">
-                                <input type="text" name="email" id="email" placeholder="Email address" style="margin-bottom: 15px;" required>
+                                <input type="text" name="email" id="email" placeholder="Email address" onkeyup="checkEmail()" style="margin-bottom: -15px;" required>
                                 <span class="icon_mail"></span>
                             </div>
+                               <span id="resultEmail"><br></span>
                                 <!-- css로 조정할것 -->
+                                 <div >
                             <button type="submit" class="site-btn">Sign Up</button>
                             <button type="reset" class="site-btn">reset</button>
+                     </div>
                         </form>
                         <h5>Already have an account? <a href="login.jsp">Log In!</a></h5>
                     </div>
