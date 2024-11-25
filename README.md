@@ -23,3 +23,5 @@
 - DBMS : MySQL
 - Version Control : GitHub
 - Front-End : JSP / Java Script / jQuery / CSS
+
+### 상세 구현 설명) https://sngynhy.tistory.com/147
